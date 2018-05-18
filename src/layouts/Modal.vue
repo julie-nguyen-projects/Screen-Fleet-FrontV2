@@ -33,7 +33,20 @@
 
 <script>
     export default {
-        name: "Modal"
+        name: "Modal",
+        props: {
+            modal: {
+                default: false
+            },
+            tvPassed: {
+                type: Object
+            }
+    },
+        methods: {
+            closeModal() {
+                console.log('closed');
+            }
+        }
     }
 </script>
 

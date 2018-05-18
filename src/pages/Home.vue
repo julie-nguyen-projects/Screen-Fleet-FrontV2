@@ -17,12 +17,12 @@
             </form>
             <ul class="list-group">
                 <li class="list-group-item" v-for="tv in this.tvs"> {{ tv.name }} | {{ tv.ipAdress }} | {{ tv.compositionId }}
-                    <button  id="show-update-modal" @click="showUpdateModal = true">Màj</button>
+                    <button  id="show-update-modal" @click="showUpdateModal(tv)">Màj</button>
                     <button @click.prevent="delTv(tv)">Supprimer</button>
                 </li>
             </ul>
-            <modal v-if="showUpdateModal" @close="showUpdateModal = false">
-
+            <modal v-if="showUpdate" :tvPassed="tvToPass" @close="showUpdate = false">
+                <h3 slot="header">custom header : {{ tvPassed }}</h3>
             </modal>
         </div>
     </main-layout>
@@ -41,13 +41,19 @@
         },
         data() {
             return {
-                showUpdateModal: false,
+                showUpdate: false,
+                tvToPass: null,
                 compositions: this.getCompositions(),
                 tvs: this.getTv(),
                 tv:{id:'', name:'', ipAdress:'', compositionId:''}
             }
         },
         methods: {
+            showUpdateModal(tv) {
+                console.log(tv.name);
+                this.showUpdate = true;
+                this.tvToPass = tv;
+            },
             getCompositions() {
                 this.$http.get('http://localhost:8200/compositions')
                     .then(response => {
