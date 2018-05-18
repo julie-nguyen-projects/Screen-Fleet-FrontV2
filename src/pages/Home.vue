@@ -1,15 +1,94 @@
 <template>
-  <main-layout>
-    <p>Welcome home</p>
-  </main-layout>
+    <main-layout>
+        <div class="col-md-6">
+            <h1>Compositions</h1>
+            <ul class="list-group">
+                <li class="list-group-item" v-for="c in this.compositions"> {{c.id}} </li>
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h1>Télévisions</h1>
+            <form>
+                <p><label for="tvname">Tv name: </label><input class="champ" type="text" id="tvname" ref="tvname"/></p>
+                <p><label for="ipAdress">Tv Ip: </label><input class="champ" type="text" id="ipAdress" ref="ipAdress"/></p>
+                <p><label for="compo">Tv composition: </label><input class="champ" type="text" id="compo" ref="compo"/></p>
+                <p><button @click.prevent="postTv()">Ajouter</button></p>
+            </form>
+            <ul class="list-group">
+                <li class="list-group-item" v-for="tv in this.tvs"> {{ tv.name }} | {{ tv.ipAdress }} | {{ tv.compositionId }}
+                    <button  id="show-update-modal" @click="showUpdateModal = true">Màj</button>
+                    <button @click.prevent="delTv(tv)">Supprimer</button>
+                </li>
+            </ul>
+            <modal v-if="showUpdateModal" @close="showUpdateModal = false">
+
+            </modal>
+        </div>
+    </main-layout>
 </template>
 
 <script>
-  import MainLayout from '../layouts/Main.vue'
+    import MainLayout from '../layouts/Main.vue'
+    import Modal from'../layouts/Modal.vue'
 
-  export default {
-    components: {
-      MainLayout
+    let axios = require('axios');
+
+    export default {
+        components: {
+            MainLayout,
+            Modal
+        },
+        data() {
+            return {
+                showUpdateModal: false,
+                compositions: this.getCompositions(),
+                tvs: this.getTv(),
+                tv:{id:'', name:'', ipAdress:'', compositionId:''}
+            }
+        },
+        methods: {
+            getCompositions() {
+                this.$http.get('http://localhost:8200/compositions')
+                    .then(response => {
+                        console.log(response.json());
+                        return response.json();
+                    }).then(data => {
+                    const resultArray = [];
+                    for (let key in data) {
+                        resultArray.push(data[key]);
+                    }
+                    this.compositions = resultArray;
+                });
+            },
+            getTv(){
+                axios.get('http://localhost:8089/tv')
+                    .then(response=>{
+                        this.tvs = response.data;
+                    });
+            },
+            delTv: function(tv){
+                axios.delete('http://localhost:8089/tv/' + tv.id);
+                this.tvs.splice(this.tvs.indexOf(tv), 1);
+            },
+            postTv(){
+                if (this.$refs.tvname.value === '' ){
+                    alert("Tv name can not be empty");
+                    return false;
+                }else if (this.$refs.ipAdress.value === '' ){
+                    alert("Tv Ip can not be empty");
+                    return false;
+                }
+
+                this.tv.ipAdress = this.$refs.ipAdress.value;
+                this.tv.name = this.$refs.tvname.value;
+                this.tv.compositionId = this.$refs.compo.value;
+
+                axios.post('http://localhost:8089/tv', this.tv)
+                    .then(response =>{
+                        this.tvs.push(response.data);
+                    });
+            }
+        }
     }
-  }
 </script>
