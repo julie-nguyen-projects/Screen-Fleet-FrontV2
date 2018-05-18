@@ -38,9 +38,7 @@
             modal: {
                 default: false
             },
-            tvPassed: {
-                type: Object
-            }
+            tvPassed: {}
     },
         methods: {
             closeModal() {
