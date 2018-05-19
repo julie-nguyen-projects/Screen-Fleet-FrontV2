@@ -21,6 +21,9 @@
                     <button @click.prevent="delTv(tv)">Supprimer</button>
                 </li>
             </ul>
+            <button @click="showCreateTv = true">Ajouter une TV</button>
+            <modal-add-tv v-if="showCreateTv" @close="closeAddTvModal()">
+            </modal-add-tv>
             <modal v-if="showUpdate" :tvPassed="tvToPass" @close="showUpdate = false">
                 <h3 slot="header">custom header : {{ tvPassed }}</h3>
             </modal>
@@ -31,16 +34,19 @@
 <script>
     import MainLayout from '../layouts/Main.vue'
     import Modal from'../layouts/Modal.vue'
+    import ModalAddTv from "../layouts/ModalAddTv";
 
     let axios = require('axios');
 
     export default {
         components: {
+            ModalAddTv,
             MainLayout,
             Modal
         },
         data() {
             return {
+                showCreateTv: false,
                 showUpdate: false,
                 tvToPass: null,
                 compositions: this.getCompositions(),
@@ -53,6 +59,10 @@
                 console.log(tv.name);
                 this.showUpdate = true;
                 this.tvToPass = tv;
+            },
+            closeAddTvModal() {
+              this.showCreateTv = false;
+              this.postTv();
             },
             getCompositions() {
                 this.$http.get('http://localhost:8200/compositions')
