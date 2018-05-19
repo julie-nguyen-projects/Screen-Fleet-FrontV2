@@ -17,7 +17,7 @@
                 <p><button @click.prevent="postTv()">Ajouter</button></p>
             </form>
             <ul>
-                <li v-for="tv in this.Tvs">
+                <li v-for="tv in this.tvs">
                     {{ tv.name }} | {{ tv.ipAdress }} | {{ tv.compositionId }}
                     <button id="show-modal" @click.prevent="modifyTv(tv)">Modifier</button>
                     <button @click.prevent="delTv(tv)">Supprimer</button>
@@ -45,7 +45,7 @@
                 showUpdate: false,
                 tvToPass: null,
                 compositions: this.getCompositions(),
-                Tvs: this.getTv(),
+                tvs: this.getTv(),
                 tv:{id:'', name:'', ipAdress:'', compositionId:''}
             }
         },
@@ -71,12 +71,12 @@
             getTv(){
                 axios.get('http://localhost:8089/tv')
                     .then(response=>{
-                        this.Tvs = response.data;
+                        this.tvs = response.data;
                     });
             },
             delTv: function(tv){
                 axios.delete('http://localhost:8089/tv/' + tv.id);
-                this.Tvs.splice(this.Tvs.indexOf(tv), 1);
+                this.tvs.splice(this.tvs.indexOf(tv), 1);
             },
             postTv(){
                 if (this.$refs.tvname.value === '' ){
@@ -93,7 +93,7 @@
 
                 axios.post('http://localhost:8089/tv', this.tv)
                     .then(response =>{
-                        this.Tvs.push(response.data);
+                        this.tvs.push(response.data);
                     });
             },
             modifyTv(tv){
