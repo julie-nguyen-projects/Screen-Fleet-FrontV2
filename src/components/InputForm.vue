@@ -83,7 +83,13 @@
                     })
                 } else {
                     event.preventDefault()
-                    alert('Please insert all the required fields')
+                    if (this.name == ''){
+                        alert('Please insert name')
+                    } else if (this.path == '') {
+                        alert('Please insert path')
+                    } else {
+                        alert('Please insert type')
+                    }
                 }
             },
             show() {
