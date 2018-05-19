@@ -45,15 +45,12 @@
                 <th> Media Name </th>
                 <th> Media Path </th>
                 <th> Media Type </th>
-                <th> Remove</th>
             </tr>
-            <tr v-for="media in medias">
+            <tr v-for="media in medias"
+                @click="removeMedia(media)">
                 <td>{{media.name}}</td>
                 <td><a :href="media.path" v-if="media.path != null"> Go See </a></td>
                 <td> {{media.mediaType }}</td>
-                <td>
-                    <button class="btn btn-primary" @click="removeMedia(media)">Remove</button>
-                </td>
             </tr>
         </table>
     </div>
@@ -114,14 +111,69 @@
     }
 </script>
 
+
 <style>
-    table, th, td {
-        border: 1px solid black;
+    table {
+        color: #333;
+        font-family: Helvetica, Arial, sans-serif;
+        width: 640px;
+        border-collapse:
+                collapse; border-spacing: 0;
         text-align: center;
-        width:100%;
     }
+
+    td, th {
+        border: 1px solid transparent; /* No more visible border */
+        height: 30px;
+        text-align: center;
+        transition: all 0.3s;  /* Simple transition for hover effect */
+    }
+
+    th {
+        background: #DFDFDF;  /* Darken header a bit */
+        font-weight: bold;
+    }
+
+    td {
+        background: #FAFAFA;
+        text-align: center;
+    }
+
+    /* Cells in even rows (2,4,6...) are one color */
+    tr:nth-child(even) td { background: #F1F1F1; }
+
+    /* Cells in odd rows (1,3,5...) are another (excludes header cells)  */
+    tr:nth-child(odd) td { background: #FEFEFE; }
+
+    tr:hover { background: #666; color: rgba(98, 11, 16, 0.65); }
+    /* Hover cell effect! */
+
     div {
         height: auto;
         margin: 0 auto;
     }
+    button.red {
+        background: -webkit-linear-gradient(top, #DD4B39, #D14836);
+        background: -moz-linear-gradient(top, #DD4B39, #D14836);
+        background: -ms-linear-gradient(top, #DD4B39, #D14836);
+        border: 1px solid #DD4B39;
+        color: white;
+        text-shadow: 0 1px 0 #C04131;
+        height: auto;
+        width: auto;
+    }
+    button.red:hover {
+        background: -webkit-linear-gradient(top, #DD4B39, #C53727);
+        background: -moz-linear-gradient(top, #DD4B39, #C53727);
+        background: -ms-linear-gradient(top, #DD4B39, #C53727);
+        border: 1px solid #AF301F;
+    }
+
+    button.red:active {
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.2);
+        background: -webkit-linear-gradient(top, #D74736, #AD2719);
+        background: -moz-linear-gradient(top, #D74736, #AD2719);
+        background: -ms-linear-gradient(top, #D74736, #AD2719);
+    }
+
 </style>
