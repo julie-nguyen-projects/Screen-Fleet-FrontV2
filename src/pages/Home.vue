@@ -2,27 +2,35 @@
     <main-layout>
         <div class="col-md-6">
             <h1>Compositions</h1>
-            <ul class="list-group">
-                <li class="list-group-item" v-for="c in this.compositions"> {{c.id}} </li>
-            </ul>
+            <div class="row" style="padding-bottom: 10px">
+                <v-link class="btn btn-primary" href="/compo">Ajouter une composition</v-link>
+            </div>
+            <div class="row">
+                <ul class="list-group" style="max-height: 500px; overflow: auto">
+                    <li class="list-group-item" v-for="c in this.compositions">
+                        <button class="btn btn-primary" @click.prevent="editCompo(c)">Modifier</button>
+                        <button class="btn btn-danger" @click.prevent="deleteCompo(c)">Supprimer</button>
+                        {{c.id}}
+                    </li>
+                </ul>
+            </div>
         </div>
 
         <div class="col-md-6">
             <h1>Télévisions</h1>
-            <p><button @click.prevent="getTv()">Actualiser</button></p>
-            <form>
-                <p><label for="tvname">Tv name: </label><input class="champ" type="text" id="tvname" ref="tvname"/></p>
-                <p><label for="ipAdress">Tv Ip: </label><input class="champ" type="text" id="ipAdress" ref="ipAdress"/></p>
-                <p><label for="compo">Tv composition: </label><input class="champ" type="text" id="compo" ref="compo"/></p>
-                <p><button @click.prevent="postTv()">Ajouter</button></p>
-            </form>
-            <ul>
-                <li v-for="tv in this.tvs">
-                    {{ tv.name }} | {{ tv.ipAdress }} | {{ tv.compositionId }}
-                    <button id="show-modal" @click.prevent="modifyTv(tv)">Modifier</button>
-                    <button @click.prevent="delTv(tv)">Supprimer</button>
-                </li>
-            </ul>
+            <div class="row" style="padding-bottom: 10px">
+                <button class="btn btn-primary" @click="showAddTv = true">Ajouter une TV</button>
+            </div>
+            <div class="row">
+                <ul class="list-group" style="max-height: 500px; overflow: auto">
+                    <li class="list-group-item" v-for="tv in this.tvs">
+                        <button class="btn btn-primary" @click.prevent="modifyTv(tv)">Modifier</button>
+                        <button class="btn btn-danger" @click.prevent="delTv(tv)">Supprimer</button>
+                        {{ tv.name }} | {{ tv.ipAdress }} | {{ tv.compositionId }}
+                    </li>
+                </ul>
+            </div>
+            <ModalAddTv v-if="showAddTv" @close="closeModal"></ModalAddTv>
             <ModifTv  v-if="showUpdate" v-bind:tv="tvToPass" @close="showUpdate = false">
             </ModifTv>
         </div>
@@ -32,16 +40,21 @@
 <script>
     import MainLayout from '../layouts/Main.vue'
     import ModifTv from'../layouts/ModifTv.vue'
+    import ModalAddTv from '../layouts/ModalAddTv.vue';
+    import VLink from '../components/VLink.vue'
 
     let axios = require('axios');
 
     export default {
         components: {
+            ModalAddTv,
             MainLayout,
-            ModifTv
+            ModifTv,
+            VLink
         },
         data() {
             return {
+                showAddTv: false,
                 showUpdate: false,
                 tvToPass: null,
                 compositions: this.getCompositions(),
@@ -50,10 +63,11 @@
             }
         },
         methods: {
-            showUpdateModal(tv) {
-                console.log(tv.name);
-                this.showUpdate = true;
-                this.tvToPass = tv;
+            closeModal() {
+                console.log('modal closed');
+                this.showAddTv = false;
+                // TODO : Si tu veux aussi passer le modal update à false this.showUpdate = false;
+                this.getTv();
             },
             getCompositions() {
                 this.$http.get('http://localhost:8200/compositions')
@@ -78,28 +92,16 @@
                 axios.delete('http://localhost:8089/tv/' + tv.id);
                 this.tvs.splice(this.tvs.indexOf(tv), 1);
             },
-            postTv(){
-                if (this.$refs.tvname.value === '' ){
-                    alert("Tv name can not be empty");
-                    return false;
-                }else if (this.$refs.ipAdress.value === '' ){
-                    alert("Tv Ip can not be empty");
-                    return false;
-                }
-
-                this.tv.ipAdress = this.$refs.ipAdress.value;
-                this.tv.name = this.$refs.tvname.value;
-                this.tv.compositionId = this.$refs.compo.value;
-
-                axios.post('http://localhost:8089/tv', this.tv)
-                    .then(response =>{
-                        this.tvs.push(response.data);
-                    });
-            },
             modifyTv(tv){
-                //console.log(tv.name);
                 this.showUpdate = true;
                 this.tvToPass = tv;
+            },
+            deleteCompo: function(c){
+                this.$http.delete('http://localhost:8200/compositions/' + c.id)
+                    .then(() => this.compositions.splice(this.compositions.indexOf(c), 1));
+            },
+            editCompo(c){
+                // TODO : aller à l'écran de création de compo avec id
             }
         }
     }
