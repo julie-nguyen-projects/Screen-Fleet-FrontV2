@@ -41,7 +41,7 @@
     import MainLayout from '../layouts/Main.vue'
     import ModifTv from'../layouts/ModifTv.vue'
     import ModalAddTv from '../layouts/ModalAddTv.vue';
-    import VLink from '../components/VLink.vue'
+    import VLink from '../components/VLink.vue';
 
     let axios = require('axios');
 

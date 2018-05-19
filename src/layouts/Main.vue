@@ -29,7 +29,7 @@
 
 <style scoped>
     .container {
-        height: 100vh;
+        min-height: 100vh;
         margin: 0 auto;
         padding: 15px 30px;
         background: #f9f7f5;
