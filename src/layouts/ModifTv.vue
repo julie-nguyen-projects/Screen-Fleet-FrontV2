@@ -7,7 +7,7 @@
 						<p><label for="tvnameModal">Tv name: </label><input class="champ" type="text" id="tvnameModal" ref="tvnameModal" :value='tv.name'/></p>
 						<p><label for="ipAdressModal">Tv Ip: </label><input class="champ" type="text" id="ipAdressModal" ref="ipAdressModal" :value='tv.ipAdress'/></p>
 						<p><label for="compoModal">Tv composition: </label><input class="champ" type="text" id="compoModal" ref="compoModal" :value='tv.compositionId'/></p>
-						<p><button @click.prevent="putTv(tv.id)">Modifier</button><button class="modal-default-button" @click="$emit('close')">Annuler</button></p>
+						<p><button @click.prevent="putTv(tv.id)"  @click="$emit('close')">Modifier</button><button class="modal-default-button" @click="$emit('close')">Annuler</button></p>
 					</form>
 				</div>
 			</div>
