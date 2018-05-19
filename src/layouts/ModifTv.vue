@@ -25,7 +25,7 @@
             closeModal() {
                 console.log('closed');
             },
-	        putTv(){
+	        putTv(id){
                 if (this.$refs.tvnameModal.value === '' ){
                     alert("Tv name can not be empty");
                     return false;
@@ -33,6 +33,10 @@
                     alert("Tv Ip can not be empty");
                     return false;
                 }
+                this.tv.ipAdress = this.$refs.ipAdressModal.value;
+		        this.tv.name = this.$refs.tvnameModal.value;
+		        this.tv.compositionId = this.$refs.compoModal.value;
+                axios.put('http://localhost:8089/tv/'+id, this.tv);
 	        }
         }
     }
