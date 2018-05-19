@@ -6,7 +6,7 @@
                     <v-link href="/">Accueil</v-link>
                 </li>
                 <li role="presentation">
-                    <v-link href="/compo">Compositions</v-link>
+                    <v-link href="/compo">Ajout Composition</v-link>
                 </li>
                 <li role="presentation">
                     <v-link href="/about">Ressources</v-link>

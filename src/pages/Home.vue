@@ -72,7 +72,6 @@
             getCompositions() {
                 this.$http.get('http://localhost:8200/compositions')
                     .then(response => {
-                        console.log(response.json());
                         return response.json();
                     }).then(data => {
                     const resultArray = [];
@@ -102,6 +101,9 @@
             },
             editCompo(c){
                 // TODO : aller à l'écran de création de compo avec id
+                this.$root.params = {id: c.id};
+                this.$root.currentRoute = '/compoEdit';
+
             }
         }
     }
