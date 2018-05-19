@@ -34,20 +34,26 @@
                     <button
                             class="btn btn-primary" @click="post">Post
                     </button>
+                    <button class="btn btn-primary" @click.prevent="show"> Show Media
+                    </button>
                 </div>
             </div>
         </form>
         <hr>
-        <table class="table table-striped">
+        <table class="table table-striped" v-if="mediaShow">
             <tr>
                 <th> Media Name </th>
                 <th> Media Path </th>
                 <th> Media Type </th>
+                <th> Remove</th>
             </tr>
             <tr v-for="media in medias">
                 <td>{{media.name}}</td>
                 <td><a :href="media.path" v-if="media.path != null"> Go See </a></td>
                 <td> {{media.mediaType }}</td>
+                <td>
+                    <button class="btn btn-primary" @click="removeMedia(media)">Remove</button>
+                </td>
             </tr>
         </table>
     </div>
@@ -61,7 +67,8 @@
                 name: '',
                 path: '',
                 mediaType: '',
-                medias: []
+                medias: [],
+                mediaShow: false
             }
         },
         methods: {
@@ -73,6 +80,18 @@
                 }
                 axios.post('http://localhost:8100/resource-media/', formData).then(res => {
                     console.log(res)
+                }).catch(err => {
+                    console.log(err)
+                })
+            },
+            show() {
+                this.mediaShow = !this.mediaShow
+            },
+            removeMedia(media) {
+                const url = 'http://localhost:8100/resource-media/' + media.id
+                axios.delete(url).then(res => {
+                    console.log(res)
+                    window.location.reload(true)
                 }).catch(err => {
                     console.log(err)
                 })
