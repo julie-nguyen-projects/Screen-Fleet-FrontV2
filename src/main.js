@@ -4,6 +4,8 @@ import routes from './routes'
 
 Vue.use(VueResource);
 
+export const tvBus = new Vue();
+
 const app = new Vue({
   el: '#app',
   data: {
