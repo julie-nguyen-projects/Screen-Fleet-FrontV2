@@ -1,14 +1,18 @@
 <template>
+    <main-layout>
     <div id="app">
         <app-media></app-media>
     </div>
+    </main-layout>
 </template>
 
 <script>
     import Media from  '../components/InputForm.vue'
+    import MainLayout from '../layouts/Main.vue';
     export default {
         components: {
-            'app-media': Media
+            'app-media': Media,
+            'main-layout': MainLayout
         }
     }
 </script>
