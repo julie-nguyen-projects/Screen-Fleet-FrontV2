@@ -33,7 +33,7 @@
 
 <script>
     export default {
-        name: "Modal",
+        name:'Modal',
         props: {
             modal: {
                 default: false
@@ -69,6 +69,7 @@
     }
 
     .modal-container {
+        text-align: left;
         width: 300px;
         margin: 0px auto;
         padding: 20px 30px;
