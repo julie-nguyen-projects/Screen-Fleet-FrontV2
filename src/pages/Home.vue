@@ -41,7 +41,7 @@
     import MainLayout from '../layouts/Main.vue'
     import ModifTv from'../layouts/ModifTv.vue'
     import ModalAddTv from '../layouts/ModalAddTv.vue';
-    import VLink from '../components/VLink.vue'
+    import VLink from '../components/VLink.vue';
 
     let axios = require('axios');
 
@@ -72,7 +72,6 @@
             getCompositions() {
                 this.$http.get('http://localhost:8200/compositions')
                     .then(response => {
-                        console.log(response.json());
                         return response.json();
                     }).then(data => {
                     const resultArray = [];
@@ -102,6 +101,9 @@
             },
             editCompo(c){
                 // TODO : aller à l'écran de création de compo avec id
+                this.$root.params = {id: c.id};
+                this.$root.currentRoute = '/compoEdit';
+
             }
         }
     }

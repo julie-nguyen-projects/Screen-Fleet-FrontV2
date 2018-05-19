@@ -1,5 +1,6 @@
 export default {
     '/': 'Home',
     '/about': 'About',
-    '/compo': 'Compositions'
+    '/compoEdit': 'EditCompositions',
+    '/compo': 'Compositions',
 }

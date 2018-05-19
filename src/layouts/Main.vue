@@ -3,13 +3,13 @@
         <div role="navigation">
             <ul class="nav nav-tabs">
                 <li role="presentation">
-                    <v-link href="/">Home</v-link>
+                    <v-link href="/">Accueil</v-link>
                 </li>
                 <li role="presentation">
-                    <v-link href="/about">About</v-link>
+                    <v-link href="/compo">Ajout Composition</v-link>
                 </li>
                 <li role="presentation">
-                    <v-link href="/compo">Compositions</v-link>
+                    <v-link href="/about">Ressources</v-link>
                 </li>
             </ul>
         </div>
@@ -29,6 +29,7 @@
 
 <style scoped>
     .container {
+        min-height: 100vh;
         margin: 0 auto;
         padding: 15px 30px;
         background: #f9f7f5;
