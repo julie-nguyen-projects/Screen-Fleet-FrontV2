@@ -17,7 +17,7 @@
                     <button class="btn btn-danger" @click.prevent="removeMedia(media)">Supprimer</button>
                 </td>
                 <td>{{media.name}}</td>
-                <td><a href="#" v-if="media.path != null"> {{media.path}} </a></td>
+                <td><a :href="media.path" v-if="media.path != null"  target="_blank"> {{media.path}} </a></td>
                 <td> {{media.mediaType }}</td>
             </tr>
         </table>
