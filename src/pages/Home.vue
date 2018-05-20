@@ -33,6 +33,7 @@
             <ModalAddTv v-if="showAddTv" @close="closeModal"></ModalAddTv>
             <ModifTv  v-if="showUpdate" v-bind:tv="tvToPass" @close="showUpdate = false">
             </ModifTv>
+            <ViewYoutube link="https://www.youtube.com/watch?v=lQKaAlMNvm8"></ViewYoutube>
         </div>
     </main-layout>
 </template>
@@ -40,8 +41,9 @@
 <script>
     import MainLayout from '../layouts/Main.vue'
     import ModifTv from'../layouts/ModifTv.vue'
-    import ModalAddTv from '../layouts/ModalAddTv.vue';
+    import ModalAddTv from '../layouts/ModalAddTv.vue'
     import VLink from '../components/VLink.vue'
+    import ViewYoutube from '../layouts/ViewYoutube.vue'
 
     let axios = require('axios');
 
@@ -50,7 +52,8 @@
             ModalAddTv,
             MainLayout,
             ModifTv,
-            VLink
+            VLink,
+            ViewYoutube
         },
         data() {
             return {
