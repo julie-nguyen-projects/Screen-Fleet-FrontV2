@@ -62,12 +62,12 @@
 
                 </div>
                 <div style="min-height: 350px; max-height: 350px; overflow: auto">
-                    <h4>MEDIAS :</h4>
+                    <h4>Médias disponibles :</h4>
                     <table class="table table-striped">
                         <tr>
-                            <th> Media Name </th>
-                            <th> Media Path </th>
-                            <th> Media Type </th>
+                            <th> Nom </th>
+                            <th> Aperçu </th>
+                            <th> Type </th>
                         </tr>
                         <tr v-for="media in medias">
                             <td>{{media.name}}</td>
