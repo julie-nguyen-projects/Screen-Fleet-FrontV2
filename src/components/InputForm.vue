@@ -78,6 +78,8 @@
                     }
                     axios.post('http://localhost:8100/resource-media/', formData).then(res => {
                         console.log(res)
+                        this.medias.push(res.data)
+                        $('form :input').val('');
                     }).catch(err => {
                         console.log(err)
                     })
