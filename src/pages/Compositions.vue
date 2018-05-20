@@ -1,20 +1,71 @@
 <template>
     <main-layout>
         <div class="row" style="padding: 10px 20px">
-            <h1>Ajouter une composition</h1>
+            <h1>Ajouter une composition </h1>
+            <div class="row" style="padding-bottom: 30px">
+                <button class="btn btn-primary" @click="addCompoAndRedirect()">Valider</button>
+                <v-link class="btn btn-secondary" href="/">Annuler</v-link>
+            </div>
         </div>
 
         <div class="row" style="min-height: 500px">
-            <div class="col-md-8">
-                Aperçu
+            <div class="col-md-6">
+                <p>Aperçu :</p>
+                <p v-if="!compo.id">Votre composition n'est pas encore créée</p>
+                <p v-if="compo.id">{{compo}}</p>
+                <div id="paneSplit" class='components-container' style="min-height: 400px;">
+                    <split-pane v-on:resize="resize" :min-percent='20' split="vertical">
+                        <template slot="paneL">
+                            A
+                        </template>
+
+                        <template slot="paneR">
+
+                            <split-pane split="horizontal">
+
+                                <template slot="paneL">
+                                    B
+                                </template>
+
+                                <template slot="paneR">
+                                    <split-pane v-on:resize="resize" split="vertical" :default-percent='30'>
+
+                                        <template slot="paneL">
+                                            C
+                                        </template>
+
+                                        <template slot="paneR">
+                                            D
+                                        </template>
+
+                                    </split-pane>
+                                </template>
+
+                            </split-pane>
+
+                        </template>
+                    </split-pane>
+                </div>
             </div>
-            <div class="col-md-4">
-                Modules
+            <div class="col-md-6">
+                <div style="min-height: 350px; max-height: 350px; overflow: auto">
+                    <div class="row">
+                        <div class="col-md-12" style="padding-bottom: 30px">
+                            <p>Diviser l'écran de manière :</p>
+                            <p><button class="btn btn-default col-md-6" @click="addHorizSplit">Horizontale</button></p>
+                            <p><button class="btn btn-default col-md-6" @click="addVerticSplit">Verticale</button></p>
+                        </div>
+                        <div class="col-md-12">
+                            SLIDE
+                        </div>
+                    </div>
+
+                </div>
+                <div style="min-height: 350px; max-height: 350px; overflow: auto">
+                    Medias :
+
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <button class="btn btn-primary" @click="addCompo()">OK</button>
-            <v-link class="btn btn-secondary" href="/">Annuler</v-link>
         </div>
     </main-layout>
 </template>
@@ -22,11 +73,13 @@
 <script>
     import MainLayout from '../layouts/Main.vue';
     import VLink from '../components/VLink.vue';
+    import splitPane from '../components/index.vue'
 
     export default {
         components: {
             MainLayout,
-            VLink
+            VLink,
+            splitPane
         },
         data() {
             return {
@@ -34,12 +87,60 @@
             }
         },
         methods: {
+            resize() {
+                console.log('resize')
+            },
+            addCompoAndRedirect() {
+                this.$root.currentRoute = '/';
+            },
             addCompo() {
                 this.$http.post('http://localhost:8200/compositions', this.compo)
-                    .then(() =>{
-                        this.$root.currentRoute = '/';
-                    });
+                    .then((result) =>{
+                        return result.json();
+                    })
+                    .then((compoCreated) => this.compo = compoCreated);
+            },
+            updateCompo() {
+                this.$http.put('http://localhost:8200/compositions', this.compo)
+                    .then((result) =>{
+                        return result.json();
+                    })
+                    .then((compoUpdated) => this.compo = compoUpdated);
+            },
+            addHorizSplit() {
+                let horizSpli = {
+                    "type": ".SplitView",
+                    'typeSplit': 'HORIZONTAL'
+                };
+
+                if (this.compo.id) {
+                    // UPDATE
+                    console.log('update');
+                    console.log(this.compo['module'].id);
+                    if (this.compo['module'].id) {
+                        console.log('déjà un module');
+                    } else {
+                        console.log('pas encore de module');
+                        this.compo['module'] = horizSpli;
+                        this.updateCompo();
+                    }
+
+                } else {
+                    // CREATE
+                    this.compo['module'] = horizSpli;
+                    this.addCompo();
+                }
+            },
+            addVerticSplit() {
+                console.log('addVerticSplit');
             }
         }
     }
 </script>
+
+<style>
+    .components-container {
+        position: relative;
+        height: 500px;
+    }
+</style>
