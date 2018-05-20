@@ -1,63 +1,66 @@
 <template>
-    <div class="container">
-        <form>
-            <div class="row">
-                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-                    <h1>Media Resource</h1>
-                    <hr>
-                    <div class="form-group">
-                        <label>Media Name</label>
-                        <input
-                                type="text"
-                                id="name"
-                                class="form-control" v-model="name">
+    <transition name="modal">
+        <div class="modal-mask">
+            <div class="modal-wrapper">
+                <div class="modal-container">
+
+                    <div class="modal-header">
+                        <slot name="header">
+                            <h1>Ajouter Média</h1>
+                        </slot>
                     </div>
-                    <div class="form-group">
-                        <label> Path </label>
-                        <input
-                                type="text"
-                                id="path"
-                                class="form-control" v-model="path">
-                    </div>
-                    <div class="form-group">
-                        <label>Media Type</label>
-                        <input
-                                type="number"
-                                id="type"
-                                class="form-control" min="0" max="2" v-model="mediaType">
+
+                    <div class="modal-body">
+
+                        <form>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-8 col-md-12 col-sm-offset-2  col-md-offset-3">
+                                    <div class="form-group">
+                                        <label>Nom du Média</label>
+                                        <input
+                                                type="text"
+                                                id="name"
+                                                class="form-control" v-model="name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label> URL </label>
+                                        <input
+                                                type="url"
+                                                id="path"
+                                                class="form-control" v-model="path">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Type du Média</label>
+                                        <input
+                                                type="number"
+                                                id="type"
+                                                class="form-control" min="0" max="2" v-model="mediaType">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3" style="float: right">
+                                    <button
+                                            class="modal-default-button" @click.prevent="$emit('close')">Annuler
+                                    </button>
+                                    <button
+                                            class="modal-default-button" @click.prevent="post">Poster
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-            <hr>
-            <div class="row">
-                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-                    <button
-                            class="postShow" @click.prevent="post">Post
-                    </button>
-                    <button class="postShow" @click.prevent="show"> Show Media
-                    </button>
-                </div>
-            </div>
-        </form>
-        <hr>
-        <table class="table table-striped" v-if="mediaShow">
-            <tr>
-                <th> Media Name </th>
-                <th> Media Path </th>
-                <th> Media Type </th>
-            </tr>
-            <tr v-for="media in medias"
-                @click="removeMedia(media)">
-                <td>{{media.name}}</td>
-                <td><a :href="media.path" v-if="media.path != null"> Go See </a></td>
-                <td> {{media.mediaType }}</td>
-            </tr>
-        </table>
-    </div>
+        </div>
+    </transition>
+
 </template>
 
 <script>
     import axios from 'axios'
+    import { compoBus } from '../main.js'
     export default {
         data () {
             return {
@@ -78,6 +81,10 @@
                     }
                     axios.post('http://localhost:8100/resource-media/', formData).then(res => {
                         console.log(res)
+                        this.medias.push(res.data)
+                        $('form :input').val('');
+                        this.$emit('close');
+                        compoBus.$emit('postNewMedia',res.data)
                     }).catch(err => {
                         console.log(err)
                     })
@@ -91,25 +98,12 @@
                         alert('Please insert type')
                     }
                 }
-            },
-            show() {
-                this.mediaShow = !this.mediaShow
-            },
-            removeMedia(media) {
-                const url = 'http://localhost:8100/resource-media/' + media.id
-                axios.delete(url).then(res => {
-                    console.log(res)
-                    window.location.reload(true)
-                }).catch(err => {
-                    console.log(err)
-                })
             }
         },
         created() {
             axios.get('http://localhost:8100/resource-media/all').then(res => {
                 //console.log('Receive ', res)
                 const data = res.data
-                const receiveMedia = []
                 for (let key in data){
                     const media = data[key]
                     this.medias.push(media)
@@ -123,7 +117,7 @@
 </script>
 
 
-<style>
+<style scoped>
     table {
         color: #333;
         font-family: Helvetica, Arial, sans-serif;
@@ -244,4 +238,67 @@
         top:1px;
     }
 
+    .modal-mask {
+        position: fixed;
+        z-index: 9998;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .5);
+        display: table;
+        transition: opacity .3s ease;
+    }
+
+    .modal-wrapper {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .modal-container {
+        width: 400px;
+        margin: 0px auto;
+        padding: 20px 30px;
+        background-color: #fff;
+        border-radius: 2px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+        transition: all .3s ease;
+        font-family: Helvetica, Arial, sans-serif;
+    }
+
+    .modal-header h3 {
+        margin-top: 0;
+        color: #42b983;
+    }
+
+    .modal-body {
+        margin: 20px 0;
+    }
+
+    .modal-default-button {
+        float: right;
+    }
+
+    /*
+     * The following styles are auto-applied to elements with
+     * transition="modal" when their visibility is toggled
+     * by Vue.js.
+     *
+     * You can easily play with the modal transition by editing
+     * these styles.
+     */
+
+    .modal-enter {
+        opacity: 0;
+    }
+
+    .modal-leave-active {
+        opacity: 0;
+    }
+
+    .modal-enter .modal-container,
+    .modal-leave-active .modal-container {
+        -webkit-transform: scale(1.1);
+        transform: scale(1.1);
+    }
 </style>
