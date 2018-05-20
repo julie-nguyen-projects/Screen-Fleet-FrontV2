@@ -10,7 +10,8 @@
                     <li class="list-group-item" v-for="c in this.compositions">
                         <button class="btn btn-primary" @click.prevent="editCompo(c)">Modifier</button>
                         <button class="btn btn-danger" @click.prevent="deleteCompo(c)">Supprimer</button>
-                        {{c.id}}
+                        <p>n°{{c.id}} </p>
+                        <p>Module : {{c.module}}</p>
                     </li>
                 </ul>
             </div>

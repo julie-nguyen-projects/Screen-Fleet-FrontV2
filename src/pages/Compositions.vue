@@ -13,8 +13,10 @@
                 <h4>Aperçu :</h4>
                 <p v-if="!compo.id">Votre composition n'est pas encore créée</p>
                 <p v-if="compo.id">{{compo}}</p>
-                <div id="paneSplit" class='components-container' style="min-height: 400px;">
-                    <split-pane v-on:resize="resize" :min-percent='20' split="vertical">
+                <div v-if="compo.module && compo.module.type === '.SplitView'" id="paneSplit" class='components-container' style="min-height: 400px;">
+                    <split-pane v-on:resize="resize" :min-percent='20' v-bind:split="getSplitType(compo.module)">
+
+                        <!--
                         <template slot="paneL">
                             A
                         </template>
@@ -44,6 +46,7 @@
                             </split-pane>
 
                         </template>
+                        -->
                     </split-pane>
                 </div>
             </div>
@@ -100,16 +103,25 @@
             }
         },
         methods: {
+            getHorizontalSplit() {
+
+            },
+            getVerticalSplit() {
+
+            },
+            getSplitType(mod) {
+                return mod.typeSplit.toLowerCase();
+            },
             getMedias() {
                 this.$http.get('http://localhost:8100/resource-media/all')
                     .then(response => {
-                            return response.json();
-                        }).then(data => {
-                            const resultArray = [];
-                            for (let key in data) {
-                                resultArray.push(data[key]);
-                            }
-                            this.medias = resultArray;
+                        return response.json();
+                    }).then(data => {
+                    const resultArray = [];
+                    for (let key in data) {
+                        resultArray.push(data[key]);
+                    }
+                    this.medias = resultArray;
                 }).catch(err => {
                     console.log(err)
                 })
@@ -144,14 +156,24 @@
                     // UPDATE
                     console.log('update');
                     console.log(this.compo['module'].id);
-                    if (this.compo['module'].id) {
-                        console.log('déjà un module');
-                    } else {
-                        console.log('pas encore de module');
-                        this.compo['module'] = horizSpli;
-                        this.updateCompo();
-                    }
+                    if (!this.compo['module'].id || (this.compo['module'].id && this.compo['module'].type !== '.SplitView')) {
+                        console.log('%%%% IF');
 
+                        this.$http.post('http://localhost:8200/split-views', horizSpli)
+                            .then((mod) => {
+                                const module =  mod.body;
+                                module['content1'] = this.compo['module'].id ? this.compo['module'] : null;
+                                this.compo['module'] = module;
+                                this.updateCompo();
+                            });
+                    } else if (this.compo['module'].type === '.SplitView') {
+                        console.log('%%%% ELSE');
+                        this.$http.post('http://localhost:8200/split-views', horizSpli)
+                            .then((response) => {
+                                const module = response.body;
+                                this.compo['module'].content1 = module;
+                            });
+                    }
                 } else {
                     // CREATE
                     this.compo['module'] = horizSpli;
@@ -160,6 +182,30 @@
             },
             addVerticSplit() {
                 console.log('addVerticSplit');
+
+                let verticalSplit = {
+                    "type": ".SplitView",
+                    'typeSplit': 'VERTICAL'
+                };
+
+                if (this.compo.id) {
+                    // UPDATE
+                    console.log('update');
+                    console.log(this.compo['module'].id);
+                    if (!this.compo['module'].id || (this.compo['module'].id && this.compo['module'].type !== '.SplitView')) {
+                        console.log('%%%% IF');
+                        verticalSplit['content1'] = this.compo['module'].id ? this.compo['module'] : null;
+                        this.compo['module'] = verticalSplit;
+                    } else if (this.compo['module'].type === '.SplitView') {
+                        console.log('%%%% ELSE');
+                        this.compo['module'].content1 = verticalSplit;
+                    }
+                    this.updateCompo();
+                } else {
+                    // CREATE
+                    this.compo['module'] = verticalSplit;
+                    this.addCompo();
+                }
             }
         }
     }
