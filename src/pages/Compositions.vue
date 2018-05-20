@@ -190,17 +190,24 @@
 
                 if (this.compo.id) {
                     // UPDATE
-                    console.log('update');
-                    console.log(this.compo['module'].id);
                     if (!this.compo['module'].id || (this.compo['module'].id && this.compo['module'].type !== '.SplitView')) {
                         console.log('%%%% IF');
-                        verticalSplit['content1'] = this.compo['module'].id ? this.compo['module'] : null;
-                        this.compo['module'] = verticalSplit;
+
+                        this.$http.post('http://localhost:8200/split-views', verticalSplit)
+                            .then((mod) => {
+                                const module =  mod.body;
+                                module['content1'] = this.compo['module'].id ? this.compo['module'] : null;
+                                this.compo['module'] = module;
+                                this.updateCompo();
+                            });
                     } else if (this.compo['module'].type === '.SplitView') {
                         console.log('%%%% ELSE');
-                        this.compo['module'].content1 = verticalSplit;
+                        this.$http.post('http://localhost:8200/split-views', verticalSplit)
+                            .then((response) => {
+                                const module = response.body;
+                                this.compo['module'].content1 = module;
+                            });
                     }
-                    this.updateCompo();
                 } else {
                     // CREATE
                     this.compo['module'] = verticalSplit;
