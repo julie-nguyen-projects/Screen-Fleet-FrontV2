@@ -179,6 +179,7 @@
                         .then(response => {
                             const baseModuleCreated = response.body;
                             this.compo['module'].slides.push(baseModuleCreated);
+                            this.updateCompo();
                     });
                 } else if (!this.compo['module']) {
                     this.compo['module'] = baseModule;
