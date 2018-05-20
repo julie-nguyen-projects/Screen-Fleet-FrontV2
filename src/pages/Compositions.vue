@@ -10,7 +10,7 @@
 
         <div class="row" style="min-height: 500px">
             <div class="col-md-6">
-                <p>Aperçu :</p>
+                <h4>Aperçu :</h4>
                 <p v-if="!compo.id">Votre composition n'est pas encore créée</p>
                 <p v-if="compo.id">{{compo}}</p>
                 <div id="paneSplit" class='components-container' style="min-height: 400px;">
@@ -62,8 +62,20 @@
 
                 </div>
                 <div style="min-height: 350px; max-height: 350px; overflow: auto">
-                    Medias :
-
+                    <h4>MEDIAS :</h4>
+                    <table class="table table-striped">
+                        <tr>
+                            <th> Media Name </th>
+                            <th> Media Path </th>
+                            <th> Media Type </th>
+                        </tr>
+                        <tr v-for="media in medias">
+                            <td>{{media.name}}</td>
+                            <td><a :href="media.path" v-if="media.path != null" target="_blank">Voir le média</a>
+                            </td>
+                            <td> {{media.mediaType }}</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -83,10 +95,25 @@
         },
         data() {
             return {
-                compo: {id: ''}
+                compo: {id: ''},
+                medias: this.getMedias()
             }
         },
         methods: {
+            getMedias() {
+                this.$http.get('http://localhost:8100/resource-media/all')
+                    .then(response => {
+                            return response.json();
+                        }).then(data => {
+                            const resultArray = [];
+                            for (let key in data) {
+                                resultArray.push(data[key]);
+                            }
+                            this.medias = resultArray;
+                }).catch(err => {
+                    console.log(err)
+                })
+            },
             resize() {
                 console.log('resize')
             },
