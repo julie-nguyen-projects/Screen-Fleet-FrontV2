@@ -3,24 +3,24 @@
         <form>
             <div class="row">
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-                    <h1>Media Resource</h1>
+                    <h1>Resources</h1>
                     <hr>
                     <div class="form-group">
-                        <label>Media Name</label>
+                        <label>Nom du Média</label>
                         <input
                                 type="text"
                                 id="name"
                                 class="form-control" v-model="name">
                     </div>
                     <div class="form-group">
-                        <label> Path </label>
+                        <label> URL </label>
                         <input
                                 type="text"
                                 id="path"
                                 class="form-control" v-model="path">
                     </div>
                     <div class="form-group">
-                        <label>Media Type</label>
+                        <label>Type du Média</label>
                         <input
                                 type="number"
                                 id="type"
@@ -34,22 +34,23 @@
                     <button
                             class="postShow" @click.prevent="post">Post
                     </button>
-                    <button class="postShow" @click.prevent="show"> Show Media
-                    </button>
                 </div>
             </div>
         </form>
         <hr>
-        <table class="table table-striped" v-if="mediaShow">
+        <table class="table table-striped">
             <tr>
-                <th> Media Name </th>
-                <th> Media Path </th>
-                <th> Media Type </th>
+                <th></th>
+                <th> Nom du Média </th>
+                <th> URL </th>
+                <th> Type du Média </th>
             </tr>
-            <tr v-for="media in medias"
-                @click="removeMedia(media)">
+            <tr v-for="media in medias">
+                <td style="width: 50px;">
+                    <button class="btn btn-danger" @click.prevent="removeMedia(media)">Supprimer</button>
+                </td>
                 <td>{{media.name}}</td>
-                <td><a :href="media.path" v-if="media.path != null"> Go See </a></td>
+                <td><a href="#" v-if="media.path != null"> {{media.path}} </a></td>
                 <td> {{media.mediaType }}</td>
             </tr>
         </table>
@@ -94,15 +95,20 @@
                     }
                 }
             },
-            show() {
-                this.mediaShow = !this.mediaShow
-            },
             removeMedia(media) {
                 const url = 'http://localhost:8100/resource-media/' + media.id
                 axios.delete(url).then(res => {
                     console.log(res)
-                    window.location.reload(true)
-                }).catch(err => {
+                    this.medias = []
+                    axios.get('http://localhost:8100/resource-media/all').then(res => {
+                        const data = res.data
+                        for (let key in data){
+                            const media = data[key]
+                            this.medias.push(media)
+                            console.log(media)
+                        }
+                    })
+                    }).catch(err => {
                     console.log(err)
                 })
             }
@@ -111,7 +117,6 @@
             axios.get('http://localhost:8100/resource-media/all').then(res => {
                 //console.log('Receive ', res)
                 const data = res.data
-                const receiveMedia = []
                 for (let key in data){
                     const media = data[key]
                     this.medias.push(media)
