@@ -174,15 +174,18 @@
                     'type': '.BaseModule',
                     'mediaId': media.id
                 };
-                if (this.compo['module']) {
+                if (this.compo['module'] && this.compo['module'].type === '.SlideView') {
                     this.$http.post('http://localhost:8200/base-modules', baseModule)
                         .then(response => {
                             const baseModuleCreated = response.body;
                             this.compo['module'].slides.push(baseModuleCreated);
                     });
-                } else {
+                } else if (!this.compo['module']) {
                     this.compo['module'] = baseModule;
                     this.addCompo();
+                } else if (this.compo['module'].type === '.BaseModule') {
+                    this.compo['module'] = baseModule;
+                    this.updateCompo();
                 }
             },
             addHorizSplit() {
