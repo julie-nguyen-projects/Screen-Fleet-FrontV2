@@ -31,9 +31,11 @@
                     </li>
                 </ul>
             </div>
+            <button class="btn btn-primary" @click.prevent="showLinkModal()">Associer Composition</button>
             <ModalAddTv v-if="showAddTv" @close="closeModal"></ModalAddTv>
             <ModifTv  v-if="showUpdate" v-bind:tv="tvToPass" @close="showUpdate = false">
             </ModifTv>
+            <LinkTvCompo v-if="showLink" v-bind:tvs="this.tvs" v-bind:compositions="this.compositions" @close="showLink = false"></LinkTvCompo>
         </div>
     </main-layout>
 </template>
@@ -43,6 +45,7 @@
     import ModifTv from'../layouts/ModifTv.vue'
     import ModalAddTv from '../layouts/ModalAddTv.vue';
     import VLink from '../components/VLink.vue';
+    import LinkTvCompo from '../layouts/LinkTvCompo.vue'
 
     let axios = require('axios');
 
@@ -51,12 +54,14 @@
             ModalAddTv,
             MainLayout,
             ModifTv,
-            VLink
+            VLink,
+            LinkTvCompo
         },
         data() {
             return {
                 showAddTv: false,
                 showUpdate: false,
+                showLink: false,
                 tvToPass: null,
                 compositions: this.getCompositions(),
                 tvs: this.getTv(),
@@ -105,6 +110,9 @@
                 this.$root.params = {id: c.id};
                 this.$root.currentRoute = '/compoEdit';
 
+            },
+            showLinkModal(){
+                this.showLink = true;
             }
         }
     }
